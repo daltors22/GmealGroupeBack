@@ -12,9 +12,11 @@ public class CommandesService {
 
     @Autowired
     private CommandesRepository commandesRepository;
-
     public List<Commandes> getAllCommandes() {
         return commandesRepository.findAll();
+    }
+    public List<Commandes> getCommandesByUserId(Integer userId) {
+        return commandesRepository.findByUserId(userId);
     }
 
     public Commandes getCommandeById(Integer id) {

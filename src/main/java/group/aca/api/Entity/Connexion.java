@@ -41,4 +41,16 @@ public class Connexion {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+    public class RegisterRequest {
+        private String nom;
+        private String prenom;
+        private String telephone;
+        private String typeUtilisateur;
+        private String email;
+        private String motDePasse;
+
+        // Getters et setters
+    }
+
+
 }

@@ -1,12 +1,11 @@
 package group.aca.api.Controller;
 
 import group.aca.api.Entity.*;
-import group.aca.api.Repository.ConnexionRepository;
-import group.aca.api.Repository.UserRepository;
 import group.aca.api.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -141,6 +140,29 @@ public class ApiController {
         commandesService.deleteCommande(id);
     }
 
+    @GetMapping("/mes-commandes")
+    public ResponseEntity<?> getMesCommandes(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Utilisateur non authentifié");
+        }
+
+        // Ici, le principal est un String contenant l'ID utilisateur
+        String userIdStr = (String) authentication.getPrincipal();
+        Integer userId = Integer.valueOf(userIdStr);
+
+        // Récupérer les commandes associées à cet utilisateur
+        List<Commandes> mesCommandes = commandesService.getCommandesByUserId(userId);
+        int nbCommandes = mesCommandes.size();
+
+        return ResponseEntity.ok(nbCommandes);
+    }
+
+
+    @PostMapping("/test")
+    public String testPost() {
+        return "POST autorisé";
+    }
     /// CONNEXION ///
 
     @Autowired

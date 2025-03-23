@@ -74,12 +74,27 @@ public class User {
         this.email = email;
     }
 
+    public void setSessionToken(Object o) {
+    }
+
+
     // Enum pour le typeUtilisateur
     public enum TypeUtilisateur {
         client,
         restaurant,
         livreur,
         admin
+    }
+
+    public class RegisterRequest {
+        private String nom;
+        private String prenom;
+        private String telephone;
+        private String typeUtilisateur;
+        private String email;
+        private String motDePasse;
+
+        // Getters et setters
     }
 
 }

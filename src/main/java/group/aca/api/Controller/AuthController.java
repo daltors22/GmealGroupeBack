@@ -115,7 +115,7 @@ public class AuthController {
             connexion.setUserId(user.getId());
             connexionRepository.save(connexion);
 
-            return ResponseEntity.ok("Utilisateur enregistré avec succès.");
+            return ResponseEntity.ok(user);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Erreur : " + ex.getMessage());

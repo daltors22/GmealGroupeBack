@@ -454,35 +454,29 @@ public class ApiController {
     }
 
     /// VILLE ///
-
     @Autowired
     private VilleService villeService;
-
-    @GetMapping("/ville")
-    public List<Ville> getAllVilles() {
-        return villeService.getAllVilles();
-    }
-
     @GetMapping("/ville/{id}")
-    public Ville getVilleById(@PathVariable Integer id) {
+    public Ville getVilleById(@PathVariable String id) {
         return villeService.getVilleById(id);
     }
 
-    @PostMapping("/ville")
-    public Ville createVille(@RequestBody Ville ville) {
-        return villeService.createOrUpdateVille(ville);
-    }
-
     @PutMapping("/ville/{id}")
-    public Ville updateVille(@PathVariable Integer id, @RequestBody Ville ville) {
+    public Ville updateVille(@PathVariable String id, @RequestBody Ville ville) {
         ville.setIdVille(id);
         return villeService.createOrUpdateVille(ville);
     }
 
     @DeleteMapping("/ville/{id}")
-    public void deleteVille(@PathVariable Integer id) {
+    public void deleteVille(@PathVariable String id) {
         villeService.deleteVille(id);
     }
 
-}
+    @GetMapping("/ville/search")
+    public List<Ville> searchVilles(@RequestParam("q") String query) {
+        return villeService.searchVillesPrioritized(query);
+    }
 
+
+
+}

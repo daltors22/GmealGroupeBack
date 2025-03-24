@@ -7,15 +7,15 @@ import jakarta.persistence.*;
 public class Adresse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id; // même que l'ID du user, donc pas @GeneratedValue
 
     private String adresse;
     private String detail;
     private String rue;
 
-    @Column(name = "Ville_id_ville")
-    private Integer villeId;
+    @ManyToOne
+    @JoinColumn(name = "Ville_id_ville", referencedColumnName = "id_ville")
+    private Ville ville;
 
     // Getters et Setters
     public Integer getId() {
@@ -50,11 +50,11 @@ public class Adresse {
         this.rue = rue;
     }
 
-    public Integer getVilleId() {
-        return villeId;
+    public Ville getVille() {
+        return ville;
     }
 
-    public void setVilleId(Integer villeId) {
-        this.villeId = villeId;
+    public void setVille(Ville ville) {
+        this.ville = ville;
     }
 }

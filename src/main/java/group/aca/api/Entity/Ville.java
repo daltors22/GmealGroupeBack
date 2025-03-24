@@ -7,18 +7,17 @@ import jakarta.persistence.*;
 public class Ville {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_ville") // Correspond à "id_ville" dans la base
-    private Integer idVille;
+    @Column(name = "id_ville", length = 10)
+    private String idVille; // Code INSEE (ex: "60159")
 
-    @Column(name = "name", nullable = false) // Correspond à "name" dans la base
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "codePostal", nullable = false) // Correspond à "codePostal" dans la base
-    private Integer codePostal;
+    @Column(name = "codePostal", nullable = false)
+    private String codePostal; // Souvent traité comme string pour gérer les CP DOM (ex: 97100)
 
     // Getters
-    public Integer getIdVille() {
+    public String getIdVille() {
         return idVille;
     }
 
@@ -26,12 +25,13 @@ public class Ville {
         return name;
     }
 
-    public Integer getCodePostal() {
+    public String getCodePostal() {
         return codePostal;
     }
 
+
     // Setters
-    public void setIdVille(Integer idVille) {
+    public void setIdVille(String idVille) {
         this.idVille = idVille;
     }
 
@@ -39,7 +39,7 @@ public class Ville {
         this.name = name;
     }
 
-    public void setCodePostal(Integer codePostal) {
+    public void setCodePostal(String codePostal) {
         this.codePostal = codePostal;
     }
 }

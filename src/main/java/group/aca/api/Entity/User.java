@@ -25,6 +25,10 @@ public class User {
     @Column(name = "email", nullable = false, length = 255)
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "adresse_id", referencedColumnName = "Id")
+    private Adresse adresse;
+
     // Getters et Setters
     public Integer getId() {
         return id;
@@ -75,6 +79,14 @@ public class User {
     }
 
     public void setSessionToken(Object o) {
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
     }
 
 

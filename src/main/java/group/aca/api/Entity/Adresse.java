@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Adresse {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; // même que l'ID du user, donc pas @GeneratedValue
 
     private String adresse;
@@ -16,6 +17,10 @@ public class Adresse {
     @ManyToOne
     @JoinColumn(name = "Ville_id_ville", referencedColumnName = "id_ville")
     private Ville ville;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "Id")
+    private User user;
 
     // Getters et Setters
     public Integer getId() {
@@ -56,5 +61,13 @@ public class Adresse {
 
     public void setVille(Ville ville) {
         this.ville = ville;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

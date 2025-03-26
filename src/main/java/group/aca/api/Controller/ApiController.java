@@ -81,9 +81,34 @@ public class ApiController {
     }
 
     @PostMapping("/adresse")
-    public Adresse createAdresse(@RequestBody Adresse adresse) {
-        return adresseService.createAdresse(adresse);
+    public ResponseEntity<?> createAdresse(@RequestBody Adresse adresse, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non authentifié");
+        }
+
+        String userIdStr = (String) authentication.getPrincipal();
+        Integer userId = Integer.valueOf(userIdStr);
+
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Utilisateur introuvable");
+        }
+
+        // Récupération sécurisée de la ville
+        Ville villeFromDb = villeService.getVilleById(adresse.getVille().getIdVille());
+        if (villeFromDb == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ville non trouvée");
+        }
+
+        adresse.setUser(user);
+        adresse.setVille(villeFromDb); // on relie à une entité connue
+
+        Adresse savedAdresse = adresseService.createAdresse(adresse);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAdresse);
     }
+
+
 
     @DeleteMapping("adresse/{id}")
     public void deleteAdresse(@PathVariable Integer id) {

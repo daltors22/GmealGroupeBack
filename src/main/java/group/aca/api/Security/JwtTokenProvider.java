@@ -35,7 +35,7 @@ public class JwtTokenProvider {
                 .claim("email", user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, decodedSecret) // Utilise la clé décodée
+                .signWith(SignatureAlgorithm.HS512, decodedSecret)
                 .compact();
     }
 

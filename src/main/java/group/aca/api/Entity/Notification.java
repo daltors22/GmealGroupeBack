@@ -24,6 +24,9 @@ public class Notification {
     @Column(name = "User_id", nullable = false)
     private Integer userId;
 
+    @Column(name = "ActiveNotif")
+    private Boolean activeNotif;
+
     // Getters et Setters
     public Integer getIdNotification() {
         return idNotification;
@@ -63,5 +66,14 @@ public class Notification {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    // Getter & Setter
+    public Boolean getActiveNotif() {
+        return activeNotif;
+    }
+
+    public void setActiveNotif(Boolean activeNotif) {
+        this.activeNotif = activeNotif;
     }
 }

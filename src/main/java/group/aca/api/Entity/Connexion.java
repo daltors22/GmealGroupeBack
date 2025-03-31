@@ -31,7 +31,10 @@ public class Connexion {
     }
 
     public void setMotDePasse(String motDePasse) {
+
+
         this.motDePasse = motDePasse;
+
     }
 
     public Integer getUserId() {

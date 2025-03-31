@@ -270,6 +270,7 @@ public class ApiController {
 
     @PostMapping("/notification")
     public Notification createNotification(@RequestBody Notification notification) {
+
         return notificationService.createOrUpdateNotification(notification);
     }
 

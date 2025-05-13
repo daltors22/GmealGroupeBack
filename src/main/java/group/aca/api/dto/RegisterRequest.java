@@ -1,6 +1,7 @@
 package group.aca.api.dto;
 
 import group.aca.api.Entity.User;
+import group.aca.api.Entity.Ville;
 
 public class RegisterRequest {
     private String nom;
@@ -9,6 +10,11 @@ public class RegisterRequest {
     private User.TypeUtilisateur typeUtilisateur; // Utilisation de l'enum
     private String email;
     private String motDePasse;
+    // Rajouter defaut = false/true
+    private String adresse;
+    private String rue;
+    private Integer Ville_id_ville;
+    private Integer user_id;
 
     // Getters et setters
 
@@ -47,5 +53,37 @@ public class RegisterRequest {
     }
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getRue() {
+        return rue;
+    }
+
+    public void setRue(String rue) {
+        this.rue = rue;
+    }
+
+    public Integer getVille_id_ville() {
+        return Ville_id_ville;
+    }
+
+    public void setVille_id_ville(Integer ville_id_ville) {
+        Ville_id_ville = ville_id_ville;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 }

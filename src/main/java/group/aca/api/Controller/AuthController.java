@@ -1,11 +1,9 @@
 package group.aca.api.Controller;
 
+import group.aca.api.Entity.*;
+import group.aca.api.Repository.AdresseRepository;
+import group.aca.api.dto.AuthResponse;
 import group.aca.api.dto.RegisterRequest;
-import group.aca.api.Entity.Connexion;
-import group.aca.api.Security.JwtResponse;
-import group.aca.api.Entity.LoginRequest;
-import group.aca.api.Entity.SessionToken;
-import group.aca.api.Entity.User;
 import group.aca.api.Repository.ConnexionRepository;
 import group.aca.api.Repository.SessionTokenRepository;
 import group.aca.api.Repository.UserRepository;
@@ -13,24 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import group.aca.api.Security.JwtTokenProvider;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("api/auth")
 public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AdresseRepository adresseRepository;
+
 
     @Autowired
     private ConnexionRepository connexionRepository;
@@ -43,13 +45,15 @@ public class AuthController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    private SessionToken sessionToken;
 
     /**
      * Login utilisateur : génère un JWT et crée une session utilisateur.
      */
-    @CrossOrigin(origins = "http://localhost:8081")
+    @ResponseStatus(HttpStatus.OK)
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public Object login(@RequestBody LoginRequest loginRequest) {
         try {
             // 1. Récupérer l'utilisateur via l'email
             User user = userRepository.findByEmail(loginRequest.getEmail())
@@ -75,14 +79,26 @@ public class AuthController {
             sessionTokenRepository.save(sessionToken);
 
             // 5. Retourner le token JWT au client
-            return ResponseEntity.ok(new JwtResponse(token));
+            // 5. Retourner un objet AuthResponse propre
+
+            return Map.of(
+                    "token", token,
+                    "user", Map.of(
+                            "id", user.getId(),
+                            "email", user.getEmail(),
+                            "type", user.getTypeUtilisateur()
+                    )
+            );
+
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : " + ex.getMessage());
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
+
+    @ResponseStatus(CREATED)
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
@@ -100,11 +116,23 @@ public class AuthController {
             user.setTelephone(registerRequest.getTelephone());
             user.setTypeUtilisateur(registerRequest.getTypeUtilisateur()); // TypeUtilisateur est un enum
             user.setEmail(registerRequest.getEmail());
+
+            //user.setAdresse(registerRequest.getAdresse());
             // Vous pouvez initialiser le sessionToken à null ou le générer lors de la connexion
             user.setSessionToken(null);
 
             // Sauvegarder l'utilisateur dans la table 'user'
             user = userRepository.save(user);
+
+            Adresse adresse = new Adresse();
+            adresse.setAdresse(registerRequest.getAdresse());
+            adresse.setRue(registerRequest.getRue());
+            adresse.setId(registerRequest.getVille_id_ville());
+            adresse.setUser(user);
+            adresse = adresseRepository.save(adresse);
+
+            user.setAdresse(adresse);
+            userRepository.save(user);
 
             // Créer l'objet Connexion pour enregistrer le mot de passe hashé
             Connexion connexion = new Connexion();
@@ -115,7 +143,7 @@ public class AuthController {
             connexion.setUserId(user.getId());
             connexionRepository.save(connexion);
 
-            return ResponseEntity.ok(user);
+            return ResponseEntity.status(CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Erreur : " + ex.getMessage());
@@ -127,7 +155,7 @@ public class AuthController {
     /**
      * Déconnexion utilisateur : invalider une session en supprimant le token côté backend.
      */
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String authorizationHeader) {
         String token = authorizationHeader.substring(7); // Enlève le "Bearer "
@@ -144,7 +172,7 @@ public class AuthController {
     /**
      * Valider un token JWT et vérifier la session correspondante.
      */
-    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/validateToken")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authorizationHeader) {
         String token = authorizationHeader.substring(7); // Enlève le "Bearer "

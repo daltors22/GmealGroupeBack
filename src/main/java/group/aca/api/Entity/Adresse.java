@@ -14,6 +14,7 @@ public class Adresse {
     private String detail;
     private String rue;
 
+
     @ManyToOne
     @JoinColumn(name = "Ville_id_ville", referencedColumnName = "id_ville")
     private Ville ville;
@@ -23,6 +24,7 @@ public class Adresse {
     private User user;
 
     // Getters et Setters
+
     public Integer getId() {
         return id;
     }

@@ -34,7 +34,7 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()  // endpoints d'authentification ouverts
+                        .requestMatchers("/api/**").permitAll()  // endpoints d'authentification ouverts
                         .anyRequest().authenticated()                  // tous les autres endpoints nécessitent une authentification
 
                 )
@@ -49,6 +49,7 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
 
 

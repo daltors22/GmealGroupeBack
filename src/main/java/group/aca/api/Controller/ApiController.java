@@ -1,6 +1,7 @@
 package group.aca.api.Controller;
 
 import group.aca.api.Entity.*;
+import group.aca.api.Repository.CommandesRepository;
 import group.aca.api.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class ApiController {
@@ -75,6 +79,7 @@ public class ApiController {
         return adresseService.getAllAdresses();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/adresse/{id}")
     public Adresse getAdresseById(@PathVariable Integer id) {
         return adresseService.getAdresseById(id);
@@ -82,9 +87,9 @@ public class ApiController {
 
     @PostMapping("/adresse")
     public ResponseEntity<?> createAdresse(@RequestBody Adresse adresse, Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non authentifié");
-        }
+        //if (authentication == null || !authentication.isAuthenticated()) {
+        //    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non authentifié");
+        //}
 
         String userIdStr = (String) authentication.getPrincipal();
         Integer userId = Integer.valueOf(userIdStr);
@@ -150,38 +155,34 @@ public class ApiController {
         return commandesService.getAllCommandes();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/commandes/{id}")
     public Commandes getCommandeById(@PathVariable Integer id) {
         return commandesService.getCommandeById(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/commandes")
     public Commandes createCommande(@RequestBody Commandes commande) {
         return commandesService.createOrUpdateCommande(commande);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/commandes/{id}")
     public void deleteCommande(@PathVariable Integer id) {
         commandesService.deleteCommande(id);
     }
 
+    @Autowired
+    private CommandesRepository commandesRepository;
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/mes-commandes")
-    public ResponseEntity<?> getMesCommandes(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Utilisateur non authentifié");
-        }
+    public List<Commandes> getCommandesByUserId(@RequestParam Integer userId) {
+        System.out.println("User ID (from auth): " + userId);
 
-        // Ici, le principal est un String contenant l'ID utilisateur
-        String userIdStr = (String) authentication.getPrincipal();
-        Integer userId = Integer.valueOf(userIdStr);
-
-        // Récupérer les commandes associées à cet utilisateur
-        List<Commandes> mesCommandes = commandesService.getCommandesByUserId(userId);
-        int nbCommandes = mesCommandes.size();
-
-        return ResponseEntity.ok(nbCommandes);
+        return commandesRepository.findByUserId(userId);
     }
+
 
 
     @PostMapping("/test")
@@ -459,11 +460,14 @@ public class ApiController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/user")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/user/{id}")
     public User getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
@@ -473,6 +477,13 @@ public class ApiController {
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/user/{id}")
+    public void modifyUser(@PathVariable Integer id, @RequestBody User user){
+        this.userService.modifyUser(id, user);
+    };
 
     @DeleteMapping("/user/{id}")
     public void deleteUser(@PathVariable Integer id) {
@@ -503,6 +514,13 @@ public class ApiController {
         return villeService.searchVillesPrioritized(query);
     }
 
+    // VISITEUR //
+    @Autowired
+    @GetMapping("/visiteur")
+    public String getVisiteur() {
 
+        return "ok";
+
+    }
 
 }

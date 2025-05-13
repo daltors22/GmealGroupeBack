@@ -17,6 +17,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
+
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -26,12 +27,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        String path = request.getRequestURI();
+        if (path.startsWith("/api/mes-commandes")) {
+            // Ignorer le filtre JWT pour cette route
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Ignore JWT validation for auth endpoints
-        if (pathMatcher.match("/api/auth/**", request.getServletPath())) {
+        if (pathMatcher.match("/api/**", request.getServletPath())) {
             filterChain.doFilter(request, response);
+            //request.requestMatchers(@"/api/**").permitAll();
             return; // On quitte la méthode immédiatement.
         }
+
+
 
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {

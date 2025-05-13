@@ -1,4 +1,5 @@
 package group.aca.api.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -27,9 +28,20 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "adresse_id", referencedColumnName = "Id")
+    @JsonIgnore
     private Adresse adresse;
 
+    private Integer defaut;
+
     // Getters et Setters
+
+    public Integer getDefaut() {
+        return defaut;
+    }
+
+    public void setDefaut(Integer defaut) {
+        this.defaut = defaut;
+    }
     public Integer getId() {
         return id;
     }

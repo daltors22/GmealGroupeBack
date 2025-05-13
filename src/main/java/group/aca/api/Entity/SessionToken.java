@@ -2,6 +2,7 @@ package group.aca.api.Entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 
 @Entity
@@ -43,8 +44,8 @@ public class SessionToken {
         this.userId = userId;
     }
 
-    public String getToken() {
-        return token;
+    public String getToken(String token) {
+        return this.token;
     }
 
     public void setToken(String token) {

@@ -143,13 +143,68 @@ async function getUserById(id) {
 
 ## 🧪 Tests
 
-Les tests unitaires sont réalisés avec JUnit.
+# Tests d'intégration et d'acceptation — Module Utilisateurs (SQL)
 
-Pour exécuter les tests :
+##  Objectif
+Ce document décrit comment tester les principales interactions autour des entités **User**, **Client**, et leurs rôles associés (`typeUtilisateur`).
 
-```bash
-mvn test
+##  Pré-requis
+- Serveur MySQL/MariaDB actif
+- Base de données importée depuis `projetgroupegmeal-7.sql`
+- Un client SQL (MySQL Workbench, DBeaver, ou console)
+
+---
+
+## Tests d'intégration
+
+### Test 1 : Création d'un utilisateur client
+```sql
+INSERT INTO `user` (Id, nom, prenom, telephone, typeUtilisateur, email)
+VALUES (1, 'Doe', 'John', '0600000000', 'client', 'john.doe@email.com');
 ```
+
+### Test 2 : Lien avec la table `client`
+```sql
+INSERT INTO `client` (id_client, préférence) VALUES (1, 'vegan');
+```
+
+### Test 3 : Lecture complète d’un utilisateur + infos client
+```sql
+SELECT u.*, c.préférence
+FROM user u
+JOIN client c ON u.Id = c.id_client
+WHERE u.Id = 1;
+```
+
+---
+
+##  Tests d’acceptation
+
+### Scénario : Création d’un utilisateur et consultation de ses préférences
+**Étapes :**
+1. Créer un utilisateur via un `INSERT`.
+2. Associer un profil client.
+3. Vérifier que les données sont correctement liées et consultables.
+
+Critères d’acceptation :
+- L'utilisateur est bien inséré avec son rôle
+- Sa préférence est consultable via une jointure
+- Aucune erreur d’intégrité ou de contrainte
+
+---
+
+##  Conseils de vérification
+- Vérifiez les types (`typeUtilisateur`) pour éviter des erreurs métier
+- Assurez-vous que l’id de l’utilisateur et du client correspondent
+- Nettoyez les données entre deux tests :
+```sql
+DELETE FROM client;
+DELETE FROM user;
+```
+
+---
+
+Dernière mise à jour : 2025-05-25
 
 ---
 

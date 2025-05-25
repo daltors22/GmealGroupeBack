@@ -1,3 +1,4 @@
+
 # Backend - API de Gestion des Commandes pour Restaurants
 
 Ce README détaille l'organisation, les prérequis, les procédures d'installation et d'exécution du projet backend basé sur Java Spring Boot dans le cadre du projet BTS SIO.
@@ -207,6 +208,19 @@ DELETE FROM user;
 Dernière mise à jour : 2025-05-25
 
 ---
+
+# Rapport de tests SQL — Utilisateurs & Clients
+
+ Date d'exécution : 2025-05-25
+
+| Test | Description                                 | Statut  | Détail technique                              |
+|------|---------------------------------------------|---------|-----------------------------------------------|
+| T1   | Création d’un utilisateur client            |  OK   | Insertion dans la table `user` réussie        |
+| T2   | Ajout de préférences client                 |  OK   | Lien établi via `id_client = user.Id`         |
+| T3   | Lecture combinée `user + client`            |  OK   | Requête JOIN retourne les bonnes données      |
+| T4   | Donnée incohérente (ID non existant)        |  Échec | Foreign key manquante pour `client.id_client` |
+
+**Note :** les erreurs peuvent venir d’un `id_client` sans utilisateur correspondant.
 
 ## 📝 Bonnes pratiques
 
